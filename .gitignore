@@ -3,3 +3,18 @@
 ################################################################################
 
 /ClanProject/obj/Debug/ClanProject_MarkupCompile.cache
+/ClanProject/obj/Debug/ClanProject_MarkupCompile.lref
+/ClanProject/obj/Debug/App.g.cs
+/ClanProject/obj/Debug/MainWindow.g.cs
+/.vs/ClanProject/v16/TestStore/0/testlog.manifest
+/.vs/ClanProject/v16/TestStore/0/000-0000.testlog
+/.vs/ClanProject/v16/Server/sqlite3/storage.ide-wal
+/.vs/ClanProject/v16/Server/sqlite3/storage.ide-shm
+/.vs/ClanProject/v16/Server/sqlite3/storage.ide
+/.vs/ClanProject/v16/Server/sqlite3/db.lock
+
+.vs/ClanProject/v16/
+
+ClanProject/bin/Debug/
+
+ClanProject/obj/Debug/

@@ -5,8 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ClanProject"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Dynasty Builder" Height="250" Width="500" ResizeMode="NoResize">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0" Grid.Column="0" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Right">
+            <Label Content="Number of Founders" />
+            <Label Name="lbl_NumberOfFounders" Content="4" HorizontalAlignment="Center" />
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="0" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Right" >
+            <Label Content="Span of Dynasty" />
+            <Label Name="lbl_YearLimit" Content="100" HorizontalAlignment="Center" />
+        </StackPanel>
+        <Slider Name="slide_NumberOfFounders" Grid.Row="0" Grid.Column="1" Margin="10" Minimum="1" Value="4" Maximum="10" VerticalAlignment="Center" SmallChange="1" 
+                ValueChanged="Slide_NumberOfFounders_ValueChanged" AutoToolTipPlacement="TopLeft" />
+        <Slider Name="slide_YearLimit" Grid.Row="1" Grid.Column="1" Margin="10" Minimum="100" Value="100" Maximum="1000" VerticalAlignment="Center" 
+                ValueChanged="Slide_YearLimit_ValueChanged" SmallChange="100" AutoToolTipPlacement="TopLeft" TickFrequency="100" LargeChange="100" />
+        <Button Name="btn_Start" Content="Run" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Width="100" Margin="10" Click="Btn_Start_Click" />
     </Grid>
 </Window>
