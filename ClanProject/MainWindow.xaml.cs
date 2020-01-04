@@ -73,7 +73,7 @@ namespace ClanProject
             }
 
             //for each year
-            while(currentYear <= DateTime.Now.Year)
+            while(currentYear <= DateTime.Now.Year && (BalancedDynasty() || currentYear < startingYear + 100))
             {
                 
                 currentYear++;
@@ -110,10 +110,13 @@ namespace ClanProject
                                 List<Member> prospectiveGrooms = new List<Member>();
                                 foreach (Member groom in dynastyMembers)
                                 {
-                                    //check for compatibility
-                                    if (groom.YearOfDeath == null && bride.IsCompatible(bride, groom, currentYear) && groom.Gender == Member.GenderGroup.Male)
+                                    if (groom.Gender == Member.GenderGroup.Male)
                                     {
-                                        prospectiveGrooms.Add(groom);
+                                        //check for compatibility
+                                        if (groom.YearOfDeath == null && bride.IsCompatible(bride, groom, currentYear))
+                                        {
+                                            prospectiveGrooms.Add(groom);
+                                        }
                                     }
                                 }
 
@@ -185,11 +188,13 @@ namespace ClanProject
 
         private void PrintDynasty()
         {
-            string fileName = @"C:\Users\atat\Documents\" + string.Format("{0}_{1}_{2}_{3}_Results.csv", DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute);
+            //C:\Users\crank\OneDrive\Documents\
+            //C:\Users\atat\Documents\
+            string fileName = @"C:\Users\crank\OneDrive\Documents\" + string.Format("{0}_{1}_{2}_{3}_Results.csv", DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute);
             using (StreamWriter sw = new StreamWriter(fileName))
             {
                 //header
-                sw.WriteLine("ID, Gender, DOB, DOD, MannerOfDeath, Mother, Father, Family");
+                sw.WriteLine("ID, Name, Surname, Gender, DOB, DOD, MannerOfDeath, Mother, Father, Family");
 
                 //data
                 foreach(Member m in dynastyMembers)
@@ -219,7 +224,7 @@ namespace ClanProject
                     }
                     else father = "NULL";
 
-                    sw.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6}, {7}", m.id.ToString(), m.Gender, DOB, DOD, m.MannerOfDeath, 
+                    sw.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}", m.id.ToString(), m.firstName, m.lastName, m.Gender, DOB, DOD, m.MannerOfDeath, 
                         mother, father, m.Family));
                 }
             }
@@ -341,10 +346,8 @@ namespace ClanProject
             else if (age < 121) odds = 400;
             else odds = 99999;
 
-            if(generation < 2)
-            {
-                if (age < 45) odds = 0; // trying to give the founders a better chance at producing a dynasty
-            }
+            if(generation < 2 && age < 45) odds = 0; // trying to give the founders a better chance at producing a dynasty
+        
 
             if (random.Next(10000) < odds) return true;
             else return false;
@@ -371,7 +374,7 @@ namespace ClanProject
 
             if(age < 65) // if they're 65 or over, they're stuck with their spouse until the end
             {
-                if (random.Next(100) == 1)
+                if (random.Next(10000) == 25)
                     return true;
             }
             return false;
@@ -408,9 +411,9 @@ namespace ClanProject
                             int odds;
 
                             if (age < 15) odds = 0;
-                            else if (age < 25) odds = 150;
-                            else if (age < 35) odds = 400;
-                            else if (age < 45) odds = 50;
+                            else if (age < 25) odds = 200;
+                            else if (age < 35) odds = 600;
+                            else if (age < 45) odds = 100;
                             else odds = 99999;
 
                             if (generation < 2) odds *= 3; // give the first generation more of a chance to found the dynasty
