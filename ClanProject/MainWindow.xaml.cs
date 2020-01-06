@@ -105,12 +105,12 @@ namespace ClanProject
                         else if (bride.Gender == Member.GenderGroup.Female)
                         {
                         //determine marriage
-                            if (bride.WillGetMarried(random, currentYear))
+                            if (bride.WillGetMarried(random, currentYear) && bride.Spouse == null)
                             {
                                 List<Member> prospectiveGrooms = new List<Member>();
                                 foreach (Member groom in dynastyMembers)
                                 {
-                                    if (groom.Gender == Member.GenderGroup.Male)
+                                    if (groom.Gender == Member.GenderGroup.Male && groom.Spouse == null && groom.Twins != Member.TwinGroup.Fraternal)
                                     {
                                         //check for compatibility
                                         if (groom.YearOfDeath == null && bride.IsCompatible(bride, groom, currentYear))
@@ -138,7 +138,7 @@ namespace ClanProject
                                 chosenGroom.Spouse = bride;
 
                                 //update the bride's name
-                                bride.lastName = chosenGroom.lastName + " né " + bride.lastName;
+                                bride.lastName = chosenGroom.lastName + " ne " + bride.lastName;
 
                                 //if the groom was created, add him to the dynasty list
                                 if(!dynastyMembers.Contains(chosenGroom))
@@ -172,6 +172,26 @@ namespace ClanProject
                                         children[i].YearOfBirth = children[0].YearOfBirth;
                                         children[i].Twin = children[0];
                                         children[0].Twin = children[i];
+
+                                        //make sure identical twins actually have the same gender
+                                        if(children[i].Twins == Member.TwinGroup.Identical && children[i].Gender != children[0].Gender)
+                                        {
+                                            children[i].Gender = children[0].Gender;
+                                            children[i].firstName = Member.GetFirstName(random, children[i].Gender);
+                                        }
+                                        else if (children[i].Twins == Member.TwinGroup.Fraternal && children[i].Gender == children[0].Gender)
+                                        {
+                                            if(children[i].Gender == Member.GenderGroup.Female)
+                                            {
+                                                children[0].Gender = Member.GenderGroup.Male;
+                                            }
+                                            else
+                                            {
+                                                children[0].Gender = Member.GenderGroup.Female;
+                                            }
+
+                                            children[0].firstName = Member.GetFirstName(random, children[0].Gender);
+                                        }
                                     }
                                 }
 
@@ -189,8 +209,8 @@ namespace ClanProject
         private void PrintDynasty()
         {
             //C:\Users\crank\OneDrive\Documents\
-            //C:\Users\atat\Documents\
-            string fileName = @"C:\Users\crank\OneDrive\Documents\" + string.Format("{0}_{1}_{2}_{3}_Results.csv", DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute);
+            //
+            string fileName = @"C:\Users\atat\Documents\" + string.Format("{0}_{1}_{2}_{3}_Results.csv", DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute);
             using (StreamWriter sw = new StreamWriter(fileName))
             {
                 //header
@@ -374,7 +394,7 @@ namespace ClanProject
 
             if(age < 65) // if they're 65 or over, they're stuck with their spouse until the end
             {
-                if (random.Next(10000) == 25)
+                if (random.Next(10000) == 12)
                     return true;
             }
             return false;
@@ -415,8 +435,6 @@ namespace ClanProject
                             else if (age < 35) odds = 600;
                             else if (age < 45) odds = 100;
                             else odds = 99999;
-
-                            if (generation < 2) odds *= 3; // give the first generation more of a chance to found the dynasty
 
                             if (random.Next(1000) < odds) return true;
                         }
@@ -553,7 +571,7 @@ namespace ClanProject
         }
         public static string GetLastName(Random random)
         {
-            string[] LastNames = new string[] { "Wickes", "Anworth", "Lockwood", "Remington", "Wildingham", "Blakesley", "Chamberlain", "Sherington", "Hanover", "Windsor", "Christenson", "Down", "Angelo", "Morgan", "Garbert-Smithe", "Harvey-Lottway", "Danvers", "Digby", "Stone", "Tucker", "Bennet", "Musgrave", "Federline", "Brock", "Forge", "Kendall", "Kensington", "Rothchester", "Griggs", "Renaud", "Langston", "Fitzgerald", "Cook", "Farrell", "Lynch", "Farbridge", "Delafontaine", "Bronson", "Humphries", "DaVille", "Coleman", "Blackwood", "Harridan", "Riverty", "Exeter", "Ravenswood", "Beckett", "Montcroix", "Baxter", "Hillington", "Meyers", "Marfont", "Younger", "Gilkes", "Keswick", "Winchester", "Montgomery", "McLeod", "Addison", "Darlington-Whit", "Bentley", "Mortcombe", "Dixon", "Frinton-Smith", "Tennesley", "O'", "Travers", "Brewer", "Lockhart", "Westwood", "Mayer", "Millington", "Winfield", "Covington", "Evans", "Lennox", "Watson", "Jenkings", "Mavis", "Burton", "Brimsey", "Sheridan", "Wilson", "Cummings", "Charmant", "Keaton", "Findlay", "Thompkins", "Camden", "Kingsley", "Asquith", "May-Porter", "Clarkin", "Jenson", "Allencourt", "Ashleigh", "Stenham", "Hagan", "Crawford", "St.Claire", "Breckenridge", "Pierpont", "Tannenbay", "Abel", "Paxton", "Barnes", "Farraday", "Hillingham", "Richfield", "Rogers", "Conwyn", "Richmond", "Archer", "Wakefield", "Brent", "Ambrose", "Winston", "Lupton", "Rowley", "Finn", "Lovett", "Lockridge", "Claymoore", "Blythe", "Chins-Ranton", "Sinnett", "Seaton", "Robshaw", "Wilde", "Mercer", "Rutherford", "Rowe", "Alden", "Quentin", "Stuart-Lane", "Rothschild", "Pattinson", "Harrods", "Durchville", "Lennon", "Reed", "Whitehall", "Farrington", "Bryton", "Merriweather", "Spencer", "Upperton", "Greaves", "Leighton", "Hampton", "Frasier", "Beaumont", "Galashiels", "Gedge", "Forbes", "Davenport", "Milbourne", "Meyer", "Erickson", "Winthrope", "Wellington", "Astor", "St.Clair", "Mast", "Strain", "Smythe", "Benson", "Gainsborough", "Whitely", "Wells", "Garrington", "Stoneshire", "Jeffries", "Royale", "Redmond", "Hargreave", "Slater", "Belleville", "Mumford", "Marple", "Kaylock", "Dennison", "Belmont", "Atkins", "Lawson" };
+            string[] LastNames = new string[] { "Wickes", "Anworth", "Lockwood", "Remington", "Wildingham", "Blakesley", "Chamberlain", "Sherington", "Hanover", "Windsor", "Christenson", "Down", "Angelo", "Morgan", "Garbert-Smithe", "Harvey-Lottway", "Danvers", "Digby", "Stone", "Tucker", "Bennet", "Musgrave", "Federline", "Brock", "Forge", "Kendall", "Kensington", "Rothchester", "Griggs", "Renaud", "Langston", "Fitzgerald", "Cook", "Farrell", "Lynch", "Farbridge", "Delafontaine", "Bronson", "Humphries", "DaVille", "Coleman", "Blackwood", "Harridan", "Riverty", "Exeter", "Ravenswood", "Beckett", "Montcroix", "Baxter", "Hillington", "Meyers", "Marfont", "Younger", "Gilkes", "Keswick", "Winchester", "Montgomery", "McLeod", "Addison", "Darlington-Whit", "Bentley", "Mortcombe", "Dixon", "Frinton-Smith", "Tennesley", "O'Connor", "Travers", "Brewer", "Lockhart", "Westwood", "Mayer", "Millington", "Winfield", "Covington", "Evans", "Lennox", "Watson", "Jenkings", "Mavis", "Burton", "Brimsey", "Sheridan", "Wilson", "Cummings", "Charmant", "Keaton", "Findlay", "Thompkins", "Camden", "Kingsley", "Asquith", "May-Porter", "Clarkin", "Jenson", "Allencourt", "Ashleigh", "Stenham", "Hagan", "Crawford", "St.Claire", "Breckenridge", "Pierpont", "Tannenbay", "Abel", "Paxton", "Barnes", "Farraday", "Hillingham", "Richfield", "Rogers", "Conwyn", "Richmond", "Archer", "Wakefield", "Brent", "Ambrose", "Winston", "Lupton", "Rowley", "Finn", "Lovett", "Lockridge", "Claymoore", "Blythe", "Chins-Ranton", "Sinnett", "Seaton", "Robshaw", "Wilde", "Mercer", "Rutherford", "Rowe", "Alden", "Quentin", "Stuart-Lane", "Rothschild", "Pattinson", "Harrods", "Durchville", "Lennon", "Reed", "Whitehall", "Farrington", "Bryton", "Merriweather", "Spencer", "Upperton", "Greaves", "Leighton", "Hampton", "Frasier", "Beaumont", "Galashiels", "Gedge", "Forbes", "Davenport", "Milbourne", "Meyer", "Erickson", "Winthrope", "Wellington", "Astor", "St.Clair", "Mast", "Strain", "Smythe", "Benson", "Gainsborough", "Whitely", "Wells", "Garrington", "Stoneshire", "Jeffries", "Royale", "Redmond", "Hargreave", "Slater", "Belleville", "Mumford", "Marple", "Kaylock", "Dennison", "Belmont", "Atkins", "Lawson" };
 
             return LastNames[random.Next(LastNames.Length)];
         }
